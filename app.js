@@ -9,8 +9,9 @@
     { id: 'elsosegely', nev: 'Elsősegély', ikon: '⛑️' },
     { id: 'fegyver', nev: 'Fegyverismeret', ikon: '🎯' },
     { id: 'abv', nev: 'ABV-védelem', ikon: '☢️' },
+    { id: 'alaki', nev: 'Alaki ismeretek', ikon: '🎖️' },
   ];
-  var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind az 5 téma)', ikon: '🔀' };
+  var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind a 6 téma)', ikon: '🔀' };
   var BETUK = ['A', 'B', 'C', 'D'];
 
   var kerdesek = (window.KERDESEK || []).map(function (k, i) {

@@ -1,5 +1,5 @@
 // Offline gyorsítótár. Tartalomváltozáskor növeld a VERZIO értékét, hogy a telefonok frissítsenek.
-var VERZIO = 'jv-v1';
+var VERZIO = 'jv-v2';
 var FAJLOK = [
   './',
   'index.html',
@@ -11,6 +11,7 @@ var FAJLOK = [
   'data/elsosegely.js',
   'data/fegyver.js',
   'data/abv.js',
+  'data/alaki.js',
   'icons/icon.svg',
   'icons/icon-192.png',
   'icons/icon-512.png',

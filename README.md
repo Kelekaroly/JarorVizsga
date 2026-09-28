@@ -1,7 +1,7 @@
 # Járőrvizsga gyakorló
 
 Telepítés nélkül, böngészőből használható gyakorló oldal a járőrvizsga elméleti részéhez:
-**Térképészet, Rádiózás, Elsősegély, Fegyverismeret, ABV-védelem**.
+**Térképészet, Rádiózás, Elsősegély, Fegyverismeret, ABV-védelem, Alaki ismeretek**.
 
 - Gyakorló mód: minden válasz után azonnali visszajelzés, magyarázat és tankönyvi oldalszám.
 - A kör végén „Hibásak újra” – addig ismételhető, amíg minden jó nem lesz.

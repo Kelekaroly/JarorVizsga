@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const FAJLOK = ['terkep', 'radio', 'elsosegely', 'fegyver', 'abv'];
+const FAJLOK = ['terkep', 'radio', 'elsosegely', 'fegyver', 'abv', 'alaki'];
 const ctx = { window: {} };
 vm.createContext(ctx);
 for (const f of FAJLOK) vm.runInContext(readFileSync(new URL(`../data/${f}.js`, import.meta.url), 'utf8'), ctx, { filename: `${f}.js` });
@@ -22,7 +22,7 @@ kerdesek.forEach((k, i) => {
     if (new Set(k.o.map((o) => o.trim().toLowerCase())).size !== 4) hibak.push(`${hol}: ismétlődő válaszlehetőség`);
   }
   if (typeof k.m !== 'string' || k.m.length < 5) hibak.push(`${hol}: hiányzó magyarázat`);
-  if (!Number.isInteger(k.p) || k.p < 100 || k.p > 560) hibak.push(`${hol}: hibás oldalszám: ${k.p}`);
+  if (!Number.isInteger(k.p) || k.p < 10 || k.p > 560) hibak.push(`${hol}: hibás oldalszám: ${k.p}`);
   const kulcs = String(k.q).trim().toLowerCase();
   if (kerdesSzovegek.has(kulcs)) hibak.push(`${hol}: duplikált kérdés (#${kerdesSzovegek.get(kulcs)})`);
   kerdesSzovegek.set(kulcs, i);
