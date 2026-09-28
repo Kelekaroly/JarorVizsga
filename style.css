@@ -1,0 +1,136 @@
+:root {
+  --bg: #f4f3ee;
+  --surface: #ffffff;
+  --text: #1d1f1a;
+  --muted: #5d6356;
+  --border: #d9d8cf;
+  --accent: #3d4a2f;
+  --accent-text: #ffffff;
+  --ok: #1f7a3a;
+  --ok-bg: #e2f3e6;
+  --bad: #b3261e;
+  --bad-bg: #fbe4e2;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14160f;
+    --surface: #1f2219;
+    --text: #eceee6;
+    --muted: #a2a898;
+    --border: #353a2c;
+    --accent: #8fa66a;
+    --accent-text: #14160f;
+    --ok: #7fd394;
+    --ok-bg: #173522;
+    --bad: #ff8a80;
+    --bad-bg: #3d1a17;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; gap: 8px;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+  background: var(--accent); color: var(--accent-text);
+}
+.topbar h1 { flex: 1; margin: 0; font-size: 18px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.counter { font-variant-numeric: tabular-nums; font-size: 15px; opacity: .9; }
+.icon-btn {
+  background: transparent; border: 0; color: inherit;
+  font-size: 22px; line-height: 1; padding: 6px 10px 6px 0;
+}
+.progress { height: 4px; background: var(--border); }
+.progress > div { height: 100%; width: 0; background: var(--ok); transition: width .25s; }
+
+main { max-width: 640px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe-area-inset-bottom)); }
+.wrap { padding: 16px; }
+
+.intro { color: var(--muted); margin: 4px 0 16px; }
+
+/* Témakártyák */
+.cards { display: grid; gap: 10px; }
+.card {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; text-align: left;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; min-height: 72px;
+}
+.card:active { transform: scale(.99); }
+.card .ico { font-size: 28px; width: 40px; text-align: center; flex: none; }
+.card .body { flex: 1; min-width: 0; }
+.card .name { font-weight: 650; }
+.card .meta { color: var(--muted); font-size: 14px; }
+.card .last { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.card.mixed { border-style: dashed; }
+
+.length { display: flex; gap: 8px; margin: 20px 0 8px; align-items: center; flex-wrap: wrap; }
+.length span { color: var(--muted); font-size: 15px; margin-right: 4px; }
+.chip {
+  border: 1px solid var(--border); background: var(--surface);
+  border-radius: 999px; padding: 6px 14px; font-size: 15px;
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+
+.foot { color: var(--muted); font-size: 13px; margin-top: 24px; }
+
+/* Kérdés */
+.topic-tag { color: var(--muted); font-size: 14px; margin: 0 0 6px; }
+.question { font-size: 20px; font-weight: 650; margin: 0 0 16px; }
+.options { display: grid; gap: 10px; }
+.opt {
+  display: flex; gap: 12px; align-items: flex-start;
+  width: 100%; text-align: left;
+  background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 14px; min-height: 56px;
+}
+.opt .key {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 700; font-size: 14px;
+  background: var(--bg); border: 1px solid var(--border);
+}
+.opt:disabled { cursor: default; }
+.opt.correct { border-color: var(--ok); background: var(--ok-bg); }
+.opt.correct .key { background: var(--ok); color: var(--surface); border-color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.opt.wrong .key { background: var(--bad); color: var(--surface); border-color: var(--bad); }
+.opt.dim { opacity: .55; }
+
+.feedback {
+  margin-top: 16px; padding: 14px 16px; border-radius: var(--radius);
+  background: var(--surface); border-left: 5px solid var(--ok);
+}
+.feedback.bad { border-left-color: var(--bad); }
+.feedback .verdict { font-weight: 700; margin: 0 0 4px; }
+.feedback.good .verdict { color: var(--ok); }
+.feedback.bad .verdict { color: var(--bad); }
+.feedback p { margin: 0; }
+.feedback .src { color: var(--muted); font-size: 14px; margin-top: 8px; }
+
+.actions { display: grid; gap: 10px; margin-top: 18px; }
+.btn {
+  border: 0; border-radius: var(--radius); padding: 14px 16px; font-weight: 650;
+  background: var(--accent); color: var(--accent-text); min-height: 52px;
+}
+.btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+/* Eredmény */
+.score { text-align: center; margin: 12px 0 20px; }
+.score .big { font-size: 56px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.score .sub { color: var(--muted); margin-top: 6px; }
+.review h2 { font-size: 17px; margin: 24px 0 10px; }
+.review ol { padding-left: 20px; margin: 0; display: grid; gap: 12px; }
+.review .q { font-weight: 600; }
+.review .a { color: var(--ok); }
+.review .your { color: var(--bad); font-size: 15px; }

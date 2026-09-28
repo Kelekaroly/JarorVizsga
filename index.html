@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Járőrvizsga gyakorló</title>
+  <meta name="description" content="Elméleti gyakorló tesztek a járőrvizsgához: térképészet, rádiózás, elsősegély, fegyverismeret, ABV.">
+  <meta name="theme-color" content="#3d4a2f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Járőrvizsga">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button id="btn-home" class="icon-btn" aria-label="Vissza a főoldalra" hidden>←</button>
+    <h1 id="title">Járőrvizsga gyakorló</h1>
+    <span id="counter" class="counter"></span>
+  </header>
+  <div id="progress" class="progress" hidden><div id="progress-bar"></div></div>
+
+  <main id="app"></main>
+
+  <noscript><p class="wrap">Az oldal működéséhez engedélyezd a JavaScriptet.</p></noscript>
+
+  <script src="data/terkep.js"></script>
+  <script src="data/radio.js"></script>
+  <script src="data/elsosegely.js"></script>
+  <script src="data/fegyver.js"></script>
+  <script src="data/abv.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
