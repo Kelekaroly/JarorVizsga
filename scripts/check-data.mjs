@@ -11,6 +11,7 @@ const kerdesek = ctx.window.KERDESEK;
 const hibak = [];
 const kerdesSzovegek = new Map();
 const darab = {};
+const szintek = {}; // téma → [alap, közepes, nehéz]
 
 kerdesek.forEach((k, i) => {
   const hol = `#${i} [${k.t}] „${String(k.q).slice(0, 50)}…”`;
@@ -23,6 +24,8 @@ kerdesek.forEach((k, i) => {
   }
   if (typeof k.m !== 'string' || k.m.length < 5) hibak.push(`${hol}: hiányzó magyarázat`);
   if (!Number.isInteger(k.p) || k.p < 10 || k.p > 560) hibak.push(`${hol}: hibás oldalszám: ${k.p}`);
+  if (![1, 2, 3].includes(k.n)) hibak.push(`${hol}: hiányzó/hibás szint (n: 1, 2 vagy 3): ${k.n}`);
+  else (szintek[k.t] = szintek[k.t] || [0, 0, 0])[k.n - 1]++;
   const kulcs = String(k.q).trim().toLowerCase();
   if (kerdesSzovegek.has(kulcs)) hibak.push(`${hol}: duplikált kérdés (#${kerdesSzovegek.get(kulcs)})`);
   kerdesSzovegek.set(kulcs, i);
@@ -30,6 +33,11 @@ kerdesek.forEach((k, i) => {
 });
 
 console.log('Kérdések témánként:', darab, '– összesen:', kerdesek.length);
+console.log('Szintek (alap/közepes/nehéz):');
+for (const [t, [a, b, c]] of Object.entries(szintek)) {
+  console.log(`  ${t}: ${a}/${b}/${c}`);
+  if (a < 10) console.warn(`  ⚠ ${t}: 10-nél kevesebb alap kérdés – a Kezdő 10-es kör nem telik meg`);
+}
 if (hibak.length) {
   console.error(`\n${hibak.length} hiba:\n` + hibak.join('\n'));
   process.exit(1);

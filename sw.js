@@ -1,5 +1,5 @@
 // Offline gyorsítótár. Tartalomváltozáskor növeld a VERZIO értékét, hogy a telefonok frissítsenek.
-var VERZIO = 'jv-v2';
+var VERZIO = 'jv-v3';
 var FAJLOK = [
   './',
   'index.html',

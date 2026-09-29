@@ -12,10 +12,16 @@
     { id: 'alaki', nev: 'Alaki ismeretek', ikon: '🎖️' },
   ];
   var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind a 6 téma)', ikon: '🔀' };
+  // Kezdőn csak az alap (n: 1) kérdések jönnek, és egy rossz válasz kimarad; Haladón minden kérdés.
+  var SZINTEK = [
+    { id: 1, nev: 'Kezdő', opciok: 3 },
+    { id: 2, nev: 'Középhaladó', opciok: 4 },
+    { id: 3, nev: 'Haladó', opciok: 4 },
+  ];
   var BETUK = ['A', 'B', 'C', 'D'];
 
   var kerdesek = (window.KERDESEK || []).map(function (k, i) {
-    return { id: k.t + '-' + i, t: k.t, q: k.q, o: k.o, m: k.m, p: k.p };
+    return { id: k.t + '-' + i, t: k.t, n: k.n || 2, q: k.q, o: k.o, m: k.m, p: k.p };
   });
 
   var $app = document.getElementById('app');
@@ -59,7 +65,14 @@
     $app.replaceChildren.apply($app, elemek);
   }
   function tema(id) { return id === VEGYES.id ? VEGYES : TEMAK.filter(function (t) { return t.id === id; })[0]; }
-  function temaKerdesei(id) { return id === VEGYES.id ? kerdesek : kerdesek.filter(function (k) { return k.t === id; }); }
+  // Érvénytelen tárolt érték esetén Középhaladó.
+  function aktSzint() {
+    var id = tarolt('szint', 2);
+    return SZINTEK.filter(function (s) { return s.id === id; })[0] || SZINTEK[1];
+  }
+  function temaKerdesei(id, szint) {
+    return kerdesek.filter(function (k) { return (id === VEGYES.id || k.t === id) && k.n <= szint.id; });
+  }
   function fejlec(cim, szamlalo, vissza) {
     $title.textContent = cim;
     $counter.textContent = szamlalo || '';
@@ -79,10 +92,11 @@
     fejlec('Járőrvizsga gyakorló', '', false);
     haladas(null);
     var hossz = tarolt('hossz', 20);
+    var szint = aktSzint();
 
     var kartya = function (t, extraClass) {
-      var db = temaKerdesei(t.id).length;
-      var utolso = tarolt('utolso.' + t.id, null);
+      var db = temaKerdesei(t.id, szint).length;
+      var utolso = tarolt('utolso.' + szint.id + '.' + t.id, null);
       return el('button', { class: 'card' + (extraClass || ''), onclick: function () { indit(t.id); } }, [
         el('span', { class: 'ico', 'aria-hidden': 'true', text: t.ikon }),
         el('span', { class: 'body' }, [
@@ -101,8 +115,18 @@
       });
     });
 
+    var szintChipek = SZINTEK.map(function (s) {
+      return el('button', {
+        class: 'chip', 'aria-pressed': String(szint.id === s.id),
+        onclick: function () { tarol('szint', s.id); fooldal(); },
+        text: s.nev,
+      });
+    });
+
     megjelenit(
-      el('p', { class: 'intro', text: 'Válassz témát! Minden válasz után azonnal látod a helyes megoldást és a magyarázatot, a kör végén pedig újra gyakorolhatod a hibásakat.' }),
+      el('p', { class: 'intro', text: 'Válassz szintet és témát! Minden válasz után azonnal látod a helyes megoldást és a magyarázatot, a kör végén pedig újra gyakorolhatod a hibásakat.' }),
+      el('div', { class: 'length level' }, [el('span', { text: 'Szint:' })].concat(szintChipek)),
+      el('p', { class: 'level-hint', text: szint.id === 1 ? 'Alapkérdések, 3 válaszlehetőséggel.' : szint.id === 2 ? 'Alap és közepes kérdések, 4 válaszlehetőséggel.' : 'Minden kérdés, a nehéz részletekkel együtt.' }),
       el('div', { class: 'cards' }, TEMAK.map(function (t) { return kartya(t); }).concat([kartya(VEGYES, ' mixed')])),
       el('div', { class: 'length' }, [el('span', { text: 'Kérdések egy körben:' })].concat(chipek)),
       el('p', { class: 'foot', text: 'Forrás: Honvédelmi ismeretek tankönyv – a kérdések saját megfogalmazásúak, oldalhivatkozással. Összesen ' + kerdesek.length + ' kérdés. Az oldal offline is működik.' })
@@ -111,11 +135,12 @@
   }
 
   // --- Kör indítása ---
-  function indit(temaId, lista) {
+  function indit(temaId, lista, szint) {
+    szint = szint || aktSzint();
     var hossz = tarolt('hossz', 20);
-    var kevert = lista ? kever(lista) : kever(temaKerdesei(temaId));
+    var kevert = lista ? kever(lista) : kever(temaKerdesei(temaId, szint));
     if (!lista && hossz > 0) kevert = kevert.slice(0, hossz);
-    kor = { temaId: temaId, lista: kevert, index: 0, jo: 0, hibak: [], ismetles: !!lista };
+    kor = { temaId: temaId, szint: szint, lista: kevert, index: 0, jo: 0, hibak: [], ismetles: !!lista };
     if (location.hash !== '#gyakorlas') history.pushState({ gyakorlas: true }, '', '#gyakorlas');
     kerdes();
   }
@@ -124,10 +149,12 @@
   function kerdes() {
     var k = kor.lista[kor.index];
     var t = tema(kor.temaId);
-    fejlec(t.nev + (kor.ismetles ? ' – hibásak' : ''), (kor.index + 1) + ' / ' + kor.lista.length, true);
+    fejlec(t.nev + (kor.ismetles ? ' – hibásak' : ''), kor.szint.nev + ' · ' + (kor.index + 1) + ' / ' + kor.lista.length, true);
     haladas(kor.index / kor.lista.length);
 
-    var sorrend = kever(k.o.map(function (szoveg, i) { return { szoveg: szoveg, helyes: i === 0 }; }));
+    // A helyes válasz mindig bekerül; a rosszakból annyi, amennyit a szint enged.
+    var rosszak = kever(k.o.slice(1)).slice(0, kor.szint.opciok - 1);
+    var sorrend = kever([{ szoveg: k.o[0], helyes: true }].concat(rosszak.map(function (szoveg) { return { szoveg: szoveg, helyes: false }; })));
     var gombok = [];
     var visszajelzes = el('div');
     var tovabb = el('div', { class: 'actions' });
@@ -182,17 +209,18 @@
   function eredmeny() {
     var ossz = kor.lista.length;
     var szazalek = Math.round(kor.jo / ossz * 100);
-    if (!kor.ismetles) tarol('utolso.' + kor.temaId, { jo: kor.jo, ossz: ossz });
-    fejlec(tema(kor.temaId).nev + ' – eredmény', '', true);
+    if (!kor.ismetles) tarol('utolso.' + kor.szint.id + '.' + kor.temaId, { jo: kor.jo, ossz: ossz });
+    fejlec(tema(kor.temaId).nev + ' – eredmény', kor.szint.nev, true);
     haladas(1);
 
     var uzenet = szazalek === 100 ? 'Hibátlan! 💪' : szazalek >= 80 ? 'Szép munka, már majdnem minden megy.' : szazalek >= 60 ? 'Jó alap – gyakorold a hibásakat!' : 'Érdemes újra átvenni ezt a témát.';
     var temaId = kor.temaId;
+    var szint = kor.szint;
     var hibak = kor.hibak;
 
     var gombok = [];
-    if (hibak.length) gombok.push(el('button', { class: 'btn', text: 'Hibásak újra (' + hibak.length + ')', onclick: function () { indit(temaId, hibak.map(function (h) { return h.k; })); } }));
-    gombok.push(el('button', { class: hibak.length ? 'btn secondary' : 'btn', text: 'Új kör ebből a témából', onclick: function () { indit(temaId); } }));
+    if (hibak.length) gombok.push(el('button', { class: 'btn', text: 'Hibásak újra (' + hibak.length + ')', onclick: function () { indit(temaId, hibak.map(function (h) { return h.k; }), szint); } }));
+    gombok.push(el('button', { class: hibak.length ? 'btn secondary' : 'btn', text: 'Új kör ebből a témából', onclick: function () { indit(temaId, null, szint); } }));
     gombok.push(el('button', { class: 'btn secondary', text: 'Főoldal', onclick: haza }));
 
     megjelenit(

@@ -4,6 +4,7 @@ Telepítés nélkül, böngészőből használható gyakorló oldal a járőrviz
 **Térképészet, Rádiózás, Elsősegély, Fegyverismeret, ABV-védelem, Alaki ismeretek**.
 
 - Gyakorló mód: minden válasz után azonnali visszajelzés, magyarázat és tankönyvi oldalszám.
+- Három szint: **Kezdő** (csak alapkérdések, 3 válaszlehetőség), **Középhaladó** (alap + közepes, 4 lehetőség), **Haladó** (minden kérdés).
 - A kör végén „Hibásak újra” – addig ismételhető, amíg minden jó nem lesz.
 - Offline is működik (első megnyitás után), és kitehető a telefon kezdőképernyőjére.
 - Nincs regisztráció, nincs szerver, nem gyűjt adatot (csak a legutóbbi eredményt tárolja a saját telefonon).
@@ -21,8 +22,9 @@ Forrás: *Honvédelmi ismeretek tankönyv*. A kérdések saját megfogalmazású
 ## Frissítés
 
 1. Kérdés javítása/bővítése a `data/*.js` fájlokban (minden kérdésnél az `o` tömb **első** eleme a helyes válasz; a program keveri a sorrendet).
+   Minden kérdésnek legyen szintje: `n: 1` alap, `n: 2` közepes, `n: 3` nehéz. Ha egy kérdés rossz szinten van, elég az `n` értékét átírni.
 2. `node scripts/check-data.mjs` – ellenőrzi a kérdésbankot.
-3. `sw.js`-ben növeld a `VERZIO` értékét (pl. `jv-v2`), hogy a telefonok frissítsenek.
+3. `sw.js`-ben növeld a `VERZIO` értékét (pl. `jv-v3` → `jv-v4`), hogy a telefonok frissítsenek.
 4. Commit + push GitHub Desktopból – pár perc múlva élesben van.
 
 ## Helyi futtatás
