@@ -11,8 +11,11 @@
     { id: 'abv', nev: 'ABV-védelem', ikon: '☢️' },
     { id: 'alaki', nev: 'Alaki ismeretek', ikon: '🎖️' },
     { id: 'hadijog', nev: 'Hadijog', ikon: '⚖️' },
+    { id: 'altalanos', nev: 'Általános katonai ismeretek', ikon: '🪖' },
+    { id: 'harcaszat', nev: 'Harcászat', ikon: '⚔️' },
+    { id: 'muszaki', nev: 'Műszaki ismeretek', ikon: '💥' },
   ];
-  var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind a 7 téma)', ikon: '🔀' };
+  var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind a 10 téma)', ikon: '🔀' };
   // Kezdőn csak az alap (n: 1) kérdések jönnek, és egy rossz válasz kimarad; Haladón minden kérdés.
   var SZINTEK = [
     { id: 1, nev: 'Kezdő', opciok: 3 },
@@ -22,7 +25,7 @@
   var BETUK = ['A', 'B', 'C', 'D'];
 
   var kerdesek = (window.KERDESEK || []).map(function (k, i) {
-    return { id: k.t + '-' + i, t: k.t, n: k.n || 2, q: k.q, o: k.o, m: k.m, p: k.p };
+    return { id: k.t + '-' + i, t: k.t, n: k.n || 2, f: k.f, q: k.q, o: k.o, m: k.m, p: k.p };
   });
 
   var $app = document.getElementById('app');
@@ -73,6 +76,11 @@
   }
   function temaKerdesei(id, szint) {
     return kerdesek.filter(function (k) { return (id === VEGYES.id || k.t === id) && k.n <= szint.id; });
+  }
+  // A kérdés forrása: tankönyvi oldal vagy a szakasz jegyzete (f: 'jegyzet').
+  function forras(k, rovid) {
+    if (k.f === 'jegyzet') return rovid ? 'jegyzet' : 'Forrás: szakaszjegyzet';
+    return rovid ? k.p + '. o.' : 'Tankönyv, ' + k.p + '. oldal';
   }
   function fejlec(cim, szamlalo, vissza) {
     $title.textContent = cim;
@@ -130,7 +138,7 @@
       el('p', { class: 'level-hint', text: szint.id === 1 ? 'Alapkérdések, 3 válaszlehetőséggel.' : szint.id === 2 ? 'Alap és közepes kérdések, 4 válaszlehetőséggel.' : 'Minden kérdés, a nehéz részletekkel együtt.' }),
       el('div', { class: 'cards' }, TEMAK.map(function (t) { return kartya(t); }).concat([kartya(VEGYES, ' mixed')])),
       el('div', { class: 'length' }, [el('span', { text: 'Kérdések egy körben:' })].concat(chipek)),
-      el('p', { class: 'foot', text: 'Forrás: Honvédelmi ismeretek tankönyv – a kérdések saját megfogalmazásúak, oldalhivatkozással. Összesen ' + kerdesek.length + ' kérdés. Az oldal offline is működik.' })
+      el('p', { class: 'foot', text: 'Forrás: Honvédelmi ismeretek tankönyv és a szakasz jegyzetei – a kérdések saját megfogalmazásúak, forrásjelöléssel. Összesen ' + kerdesek.length + ' kérdés. Az oldal offline is működik.' })
     );
     window.scrollTo(0, 0);
   }
@@ -174,7 +182,7 @@
       visszajelzes.replaceChildren(el('div', { class: 'feedback ' + (jo ? 'good' : 'bad'), role: 'status' }, [
         el('p', { class: 'verdict', text: jo ? '✓ Helyes!' : '✗ Nem jó. Helyes válasz: ' + k.o[0] }),
         el('p', { text: k.m }),
-        el('p', { class: 'src', text: 'Tankönyv, ' + k.p + '. oldal' }),
+        el('p', { class: 'src', text: forras(k) }),
       ]));
       var utolso = kor.index === kor.lista.length - 1;
       var gomb = el('button', { class: 'btn', text: utolso ? 'Eredmény' : 'Következő kérdés →', onclick: kovetkezo });
@@ -236,7 +244,7 @@
           return el('li', null, [
             el('div', { class: 'q', text: h.k.q }),
             el('div', { class: 'a', text: '✓ ' + h.k.o[0] }),
-            el('div', { class: 'your', text: 'A te válaszod: ' + h.valasz + ' · ' + h.k.p + '. o.' }),
+            el('div', { class: 'your', text: 'A te válaszod: ' + h.valasz + ' · ' + forras(h.k, true) }),
           ]);
         })),
       ]) : null

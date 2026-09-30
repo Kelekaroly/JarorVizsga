@@ -1,7 +1,7 @@
 # Járőrvizsga gyakorló
 
 Telepítés nélkül, böngészőből használható gyakorló oldal a járőrvizsga elméleti részéhez:
-**Térképészet, Rádiózás, Elsősegély, Fegyverismeret, ABV-védelem, Alaki ismeretek, Hadijog**.
+**Térképészet, Rádiózás, Elsősegély, Fegyverismeret, ABV-védelem, Alaki ismeretek, Hadijog, Általános katonai ismeretek, Harcászat, Műszaki ismeretek**.
 
 - Gyakorló mód: minden válasz után azonnali visszajelzés, magyarázat és tankönyvi oldalszám.
 - Három szint: **Kezdő** (csak alapkérdések, 3 válaszlehetőség), **Középhaladó** (alap + közepes, 4 lehetőség), **Haladó** (minden kérdés).
@@ -9,7 +9,7 @@ Telepítés nélkül, böngészőből használható gyakorló oldal a járőrviz
 - Offline is működik (első megnyitás után), és kitehető a telefon kezdőképernyőjére.
 - Nincs regisztráció, nincs szerver, nem gyűjt adatot (csak a legutóbbi eredményt tárolja a saját telefonon).
 
-Forrás: *Honvédelmi ismeretek tankönyv*. A kérdések saját megfogalmazásúak, oldalhivatkozással.
+Forrás: *Honvédelmi ismeretek tankönyv* és a szakasz saját jegyzetei (26/12/2-es modul). A kérdések saját megfogalmazásúak; a tankönyviek oldalszámot, a jegyzetből írtak „szakaszjegyzet” forrásjelölést kapnak.
 
 ## Közzététel (GitHub Pages)
 
@@ -23,8 +23,9 @@ Forrás: *Honvédelmi ismeretek tankönyv*. A kérdések saját megfogalmazású
 
 1. Kérdés javítása/bővítése a `data/*.js` fájlokban (minden kérdésnél az `o` tömb **első** eleme a helyes válasz; a program keveri a sorrendet).
    Minden kérdésnek legyen szintje: `n: 1` alap, `n: 2` közepes, `n: 3` nehéz. Ha egy kérdés rossz szinten van, elég az `n` értékét átírni.
+   Tankönyvi kérdésnél `p` az oldalszám; a szakaszjegyzetből írt kérdésnél `p` helyett `f: 'jegyzet'` áll.
 2. `node scripts/check-data.mjs` – ellenőrzi a kérdésbankot.
-3. `sw.js`-ben növeld a `VERZIO` értékét (pl. `jv-v4` → `jv-v5`), hogy a telefonok frissítsenek.
+3. `sw.js`-ben növeld a `VERZIO` értékét (pl. `jv-v5` → `jv-v6`), hogy a telefonok frissítsenek.
 4. Commit + push GitHub Desktopból – pár perc múlva élesben van.
 
 ## Helyi futtatás

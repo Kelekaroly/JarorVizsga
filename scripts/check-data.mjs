@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const FAJLOK = ['terkep', 'radio', 'elsosegely', 'fegyver', 'abv', 'alaki', 'hadijog'];
+const FAJLOK = ['terkep', 'radio', 'elsosegely', 'fegyver', 'abv', 'alaki', 'hadijog', 'altalanos', 'harcaszat', 'muszaki'];
 const ctx = { window: {} };
 vm.createContext(ctx);
 for (const f of FAJLOK) vm.runInContext(readFileSync(new URL(`../data/${f}.js`, import.meta.url), 'utf8'), ctx, { filename: `${f}.js` });
@@ -12,6 +12,7 @@ const hibak = [];
 const kerdesSzovegek = new Map();
 const darab = {};
 const szintek = {}; // téma → [alap, közepes, nehéz]
+const jegyzetes = {};
 
 kerdesek.forEach((k, i) => {
   const hol = `#${i} [${k.t}] „${String(k.q).slice(0, 50)}…”`;
@@ -23,7 +24,11 @@ kerdesek.forEach((k, i) => {
     if (new Set(k.o.map((o) => o.trim().toLowerCase())).size !== 4) hibak.push(`${hol}: ismétlődő válaszlehetőség`);
   }
   if (typeof k.m !== 'string' || k.m.length < 5) hibak.push(`${hol}: hiányzó magyarázat`);
-  if (!Number.isInteger(k.p) || k.p < 10 || k.p > 560) hibak.push(`${hol}: hibás oldalszám: ${k.p}`);
+  // Tankönyvi kérdésnél oldalszám kell; a szakaszjegyzetből írtaknál f: 'jegyzet'.
+  if (k.f !== undefined) {
+    if (k.f !== 'jegyzet') hibak.push(`${hol}: ismeretlen forrás (f): ${k.f}`);
+    else jegyzetes[k.t] = (jegyzetes[k.t] || 0) + 1;
+  } else if (!Number.isInteger(k.p) || k.p < 10 || k.p > 560) hibak.push(`${hol}: hibás oldalszám: ${k.p}`);
   if (![1, 2, 3].includes(k.n)) hibak.push(`${hol}: hiányzó/hibás szint (n: 1, 2 vagy 3): ${k.n}`);
   else (szintek[k.t] = szintek[k.t] || [0, 0, 0])[k.n - 1]++;
   const kulcs = String(k.q).trim().toLowerCase();
@@ -35,7 +40,7 @@ kerdesek.forEach((k, i) => {
 console.log('Kérdések témánként:', darab, '– összesen:', kerdesek.length);
 console.log('Szintek (alap/közepes/nehéz):');
 for (const [t, [a, b, c]] of Object.entries(szintek)) {
-  console.log(`  ${t}: ${a}/${b}/${c}`);
+  console.log(`  ${t}: ${a}/${b}/${c}` + (jegyzetes[t] ? ` – ebből jegyzetes: ${jegyzetes[t]}` : ''));
   if (a < 10) console.warn(`  ⚠ ${t}: 10-nél kevesebb alap kérdés – a Kezdő 10-es kör nem telik meg`);
 }
 if (hibak.length) {
