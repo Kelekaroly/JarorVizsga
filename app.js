@@ -10,8 +10,9 @@
     { id: 'fegyver', nev: 'Fegyverismeret', ikon: '🎯' },
     { id: 'abv', nev: 'ABV-védelem', ikon: '☢️' },
     { id: 'alaki', nev: 'Alaki ismeretek', ikon: '🎖️' },
+    { id: 'hadijog', nev: 'Hadijog', ikon: '⚖️' },
   ];
-  var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind a 6 téma)', ikon: '🔀' };
+  var VEGYES = { id: 'vegyes', nev: 'Vegyes (mind a 7 téma)', ikon: '🔀' };
   // Kezdőn csak az alap (n: 1) kérdések jönnek, és egy rossz válasz kimarad; Haladón minden kérdés.
   var SZINTEK = [
     { id: 1, nev: 'Kezdő', opciok: 3 },

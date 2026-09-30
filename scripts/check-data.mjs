@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const FAJLOK = ['terkep', 'radio', 'elsosegely', 'fegyver', 'abv', 'alaki'];
+const FAJLOK = ['terkep', 'radio', 'elsosegely', 'fegyver', 'abv', 'alaki', 'hadijog'];
 const ctx = { window: {} };
 vm.createContext(ctx);
 for (const f of FAJLOK) vm.runInContext(readFileSync(new URL(`../data/${f}.js`, import.meta.url), 'utf8'), ctx, { filename: `${f}.js` });
